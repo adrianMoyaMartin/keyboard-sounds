@@ -2,9 +2,9 @@ use std::path::Path;
 use std::fs::File;
 use std::io::BufReader;
 
-use rodio::{Decoder, OutputStream, OutputStreamHandle, Source};
+use rodio::{ Decoder, OutputStream, OutputStreamHandle, Source };
 
-pub fn create_variables()->(Vec<Vec<f32>>, OutputStreamHandle) {
+pub fn create_variables() -> (Vec<Vec<f32>>, OutputStream, OutputStreamHandle) {
     // loads all custom sounds
     let mut audio_data: Vec<Vec<f32>> = Vec::with_capacity(256);
     for i in 0..255 {
@@ -17,20 +17,19 @@ pub fn create_variables()->(Vec<Vec<f32>>, OutputStreamHandle) {
         }
     }
     // creates stream handle
-    let (_, stream_handle) = OutputStream::try_default().unwrap();
+    let (_stream, stream_handle) = OutputStream::try_default().unwrap();
 
-    return (audio_data, stream_handle)
+    return (audio_data, _stream, stream_handle);
 }
 
-pub fn play_sound(audio_data: &Vec<Vec<f32>>, stream_handle: &OutputStreamHandle, i: usize) {
-    let source_instance = rodio::buffer::SamplesBuffer::new(
-        1,
-        55150,
-        &*audio_data[i]
-    );
-    stream_handle
-        .play_raw(source_instance.convert_samples())
-        .expect("failed to play sounds");
+pub fn play_sound(
+    audio_data: &Vec<Vec<f32>>,
+    _stream: &OutputStream,
+    stream_handle: &OutputStreamHandle,
+    i: usize
+) {
+    let source_instance = rodio::buffer::SamplesBuffer::new(1, 55150, &*audio_data[i]);
+    stream_handle.play_raw(source_instance.convert_samples()).expect("failed to play sounds");
 }
 
 fn save_audio(path: &str) -> Vec<f32> {
