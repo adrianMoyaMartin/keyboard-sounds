@@ -1,0 +1,8 @@
+[package]
+name = "keyboard-sounds"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+rodio = "0.18.1"
+winapi = {version = "0.3.9", features = ["winuser"]}
